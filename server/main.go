@@ -29,5 +29,4 @@ func main(){
 	router.PUT("/ingrdient/update/:id", routes.UpdateIngredient)
 	router.DELETE("/entry/delete/:id", routes.DeleteEntry)
 	router.Run(":" + port)
-
 }
