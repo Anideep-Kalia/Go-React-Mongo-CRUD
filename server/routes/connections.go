@@ -13,7 +13,7 @@ import (
 func DBinstance() *mongo.Client {
 	MongoDb := "mongodb+srv://<username>:<password>@<cluster-url>/caloriesdb?retryWrites=true&w=majority"
 
-	client, err := mongo.newClient(options.Client().ApplyURI(MongoDb))
+	client, err := mongo.NewClient(options.Client().ApplyURI(MongoDb))
 	if err != nil {
 		log.Fatal(err)
 	}
