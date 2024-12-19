@@ -50,8 +50,8 @@ func AddEntry(c *gin.Context) {				// c.JSON -> just like a response
 func GetEntries(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 
-	var entries []bson.M
-	cursor, err := entryCollection.Find(ctx, bson.M{})
+	var entries []bson.M											// slice of bson.M used to store the result of the request
+	cursor, err := entryCollection.Find(ctx, bson.M{})				// empty bson.M{} means take all the enteries 
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -59,7 +59,7 @@ func GetEntries(c *gin.Context) {
 		return
 	}
 
-	if err = cursor.All(ctx, &entries); err != nil {
+	if err = cursor.All(ctx, &entries); err != nil {				// appending all results in the enetries variable
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
