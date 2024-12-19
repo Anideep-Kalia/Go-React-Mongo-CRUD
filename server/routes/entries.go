@@ -19,7 +19,7 @@ var validate = validator.New()
 var entryCollection *mongo.Collection = OpenCollection(Client, "calories")
 
 // adding enteries into DB
-func AddEntry(c *gin.Context) {
+func AddEntry(c *gin.Context) {				// c.JSON -> just like a response 
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)  	//context is package used to manage API calls like deadline, timeout etc..
 	var entry models.Entry   														// from models folder
 
@@ -30,7 +30,7 @@ func AddEntry(c *gin.Context) {
 	}
 	validationErr := validate.Struct(entry)
 	if validationErr != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": validationErr.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": validationErr.Error()})	//gin.H is used to mapping so message can be sent in tabular format
 		fmt.Println(validationErr)
 		return
 	}
@@ -46,3 +46,25 @@ func AddEntry(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// Getting all enteries in the DB
+func GetEntries(c *gin.Context) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+
+	var entries []bson.M
+	cursor, err := entryCollection.Find(ctx, bson.M{})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+
+	if err = cursor.All(ctx, &entries); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	defer cancel()
+	fmt.Println(entries)
+	c.JSON(http.StatusOK, entries)
+}
