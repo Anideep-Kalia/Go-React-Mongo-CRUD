@@ -68,3 +68,43 @@ func GetEntries(c *gin.Context) {
 	fmt.Println(entries)
 	c.JSON(http.StatusOK, entries)
 }
+
+// Literally same function as above just with tweaks to get some specific results
+func GetEntriesByIngredient(c *gin.Context) {
+	ingredient := c.Params.ByName("id")
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	var entries []bson.M
+	cursor, err := entryCollection.Find(ctx, bson.M{"ingredients": ingredient})		//ingredients are inserted to get specific results
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	if err = cursor.All(ctx, &entries); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	defer cancel()
+	fmt.Println(entries)
+
+	c.JSON(http.StatusOK, entries)
+}
+
+// Again same fucntion but now for specific IDs
+func GetEntryById(c *gin.Context) {
+	EntryID := c.Params.ByName("id")
+	docID, _ := primitive.ObjectIDFromHex(EntryID)
+
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	var entry bson.M
+	if err := entryCollection.FindOne(ctx, bson.M{"_id": docID}).Decode(&entry); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+	defer cancel()
+	fmt.Println(entry)
+	c.JSON(http.StatusOK, entry)
+}
+
