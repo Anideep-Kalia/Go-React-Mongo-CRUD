@@ -23,7 +23,7 @@ func main(){
 	router.POST("/entry/create", routes.AddEntry)
 	router.GET("entries",routes.GetEnteries)
 	router.GET("entry/:id/",routes.GetEntryById)
-	router.GET("/ingredient/:ingredient", routes.GetEnteriesByIngredient)
+	router.GET("/ingredient/:ingredient", routes.GetEntriesByIngredient)
 
 	router.PUT("/entry/update/:id",routes.UpdateEntry)
 	router.PUT("/ingrdient/update/:id", routes.UpdateIngredient)

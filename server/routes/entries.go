@@ -48,7 +48,7 @@ func AddEntry(c *gin.Context) {				// c.JSON -> just like a response
 }
 
 // Getting all enteries in the DB
-func GetEntries(c *gin.Context) {
+func GetEnteries(c *gin.Context) {
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 
 	var entries []bson.M											// slice of bson.M used to store the result of the request
